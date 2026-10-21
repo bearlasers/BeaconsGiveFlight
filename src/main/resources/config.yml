@@ -1,0 +1,6 @@
+messages:
+  # Uses minimessage format
+  # https://docs.papermc.io/adventure/minimessage/
+  # Use empty string "" to remove message
+  flight-enabled: "<bold><gradient:#11998e:#38ef7d:#11998e:-1.00>The beacon empowers you with flight.</gradient></bold>"
+  flight-expired: "<gray>The beacon is too distant. You lose the ability to fly."
