@@ -1,6 +1,7 @@
 package me.bearlasers.beaconsGiveFlight;
 
-import com.destroystokyo.paper.event.block.BeaconEffectEvent;
+//import com.destroystokyo.paper.event.block.BeaconEffectEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -75,19 +76,27 @@ public final class BeaconsGiveFlight extends JavaPlugin implements org.bukkit.ev
     }
 
     @org.bukkit.event.EventHandler
-    public void onBeaconEffect(BeaconEffectEvent event) {
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
+    public void onPotionEffect(EntityPotionEffectEvent event) {
+        org.bukkit.entity.Entity rawEntity = event.getEntity();
 
-        beaconActivePlayers.put(uuid, System.currentTimeMillis());
+        if (!(rawEntity instanceof Player)) {
+            return;
+        }
+        Player player = (Player) rawEntity;
 
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-            if (!player.getAllowFlight()) {
-                player.setAllowFlight(true);
-                String msg = getConfig().getString("messages.flight-enabled", "<bold><gradient:#11998e:#38ef7d:#11998e:-1.00>The beacon empowers you with flight.</gradient></bold>");
-                if (!msg.isEmpty()) {
-                    Component parsedMessage = MiniMessage.miniMessage().deserialize(msg);
-                    player.sendMessage(parsedMessage);
+        if (event.getCause() == EntityPotionEffectEvent.Cause.BEACON) {
+            UUID uuid = player.getUniqueId();
+
+            beaconActivePlayers.put(uuid, System.currentTimeMillis());
+
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                if (!player.getAllowFlight()) {
+                    player.setAllowFlight(true);
+                    String msg = getConfig().getString("messages.flight-enabled", "<bold><gradient:#11998e:#38ef7d:#11998e:-1.00>The beacon empowers you with flight.</gradient></bold>");
+                    if (!msg.isEmpty()) {
+                        Component parsedMessage = MiniMessage.miniMessage().deserialize(msg);
+                        player.sendMessage(parsedMessage);
+                    }
                 }
             }
         }
